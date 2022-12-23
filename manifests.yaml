@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: image_send_app
+spec:
+  #replicas: 1
+  selector:
+    matchLabels:
+      app: image_send_app
+  template:
+    metadata:
+      labels:
+        app: image_send_app
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: sensortype
+                operator: In
+                values:
+                - usb_camera
+      containers:
+        - name: image_send_app
+          image: alicey/image_send_app:latest
+          # securityContext:
+          #   privileged: true
+          env:
+            - name: POST_ADDR
+              value: "http://127.0.0.1/temp"
+            # - name: PIN
+            #   value: "23"            
+            # - name: INTERVAL
+            #   value: "10"

@@ -4,12 +4,18 @@ import logging
 import time
 import uuid
 import cv2
+import base64
+import json
+import os
+import socket
 load_dotenv()
 
-DEVICE_ID = 2
-INTERVAL = 2
-INTERVAL_2 = 2
-TMP_DIR = './tmp'
+DEVICE_ID = int(os.getenv('DEVICE_ID'))
+INTERVAL = int(os.getenv('INTERVAL'))
+INTERVAL_2 = int(os.getenv('INTERVAL_2'))
+TMP_DIR = str(os.getenv('TMP_DIR'))
+POST_URL = str(os.getenv('POST_URL'))
+HOST_NAME = str(socket.gethostname())
 
 def get_image(path:str) -> str:
     capture = cv2.VideoCapture(DEVICE_ID)
@@ -54,6 +60,8 @@ def motion_detection(threshold=200):
         if detection:
             path = f"{TMP_DIR}/{uuid.uuid4()}.png"
             cv2.imwrite(path, frame)
+            post_img_file(POST_URL, path) #Post
+            os.remove(path)
             before_img = gray_img.astype("float")
             cnt = 0
             time.sleep(INTERVAL_2)
@@ -68,11 +76,25 @@ def motion_detection(threshold=200):
         
     capture.release()
 
+def post_img_file(send_url:str, img_file_path:str):
+    try:
+        with open(img_file_path, "rb") as img_file:
+            img_base64 = base64.b64encode(img_file.read()).decode('utf-8')
+        #print(img_base64, type(img_base64))
+        headers = { "Content-Type": "application/json" }
+        data = {"name":"%s" % HOST_NAME,"img_base64": img_base64}
+        response = requests.post(send_url, data=json.dumps(data), headers=headers)
+        return False
+    except:
+        return True
 
 
 def main():
+    try:
+        os.mkdir(TMP_DIR)
+    except:
+        pass
     motion_detection()
-
 
 if __name__ == '__main__':
     main()

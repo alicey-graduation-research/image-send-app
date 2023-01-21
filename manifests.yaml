@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: image_send_app
+  name: image-send-app
 spec:
   #replicas: 1
   selector:
     matchLabels:
-      app: image_send_app
+      app: image-send-app
   template:
     metadata:
       labels:
-        app: image_send_app
+        app: image-send-app
     spec:
       affinity:
         nodeAffinity:
@@ -22,7 +22,7 @@ spec:
                 values:
                 - camera
       containers:
-        - name: image_send_app
+        - name: image-send-app
           image: alicey/image_send_app:latest
           securityContext:
             privileged: true
@@ -30,7 +30,7 @@ spec:
             - name: DEVICE_ID
               value: "0"
             - name: POST_URL
-              value: "http://127.0.0.1/temp"
+              value: "http://172.10.200.13:32121/api/image/"
             - name: TMP_DIR
               value: "./tmp"            
             - name: INTERVAL

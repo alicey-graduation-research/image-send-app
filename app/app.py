@@ -12,7 +12,7 @@ load_dotenv()
 
 DEVICE_ID = int(os.getenv('DEVICE_ID'))
 INTERVAL = int(os.getenv('INTERVAL'))
-INTERVAL_2 = int(os.getenv('INTERVAL_2'))
+INTERVAL_CAPTURE = int(os.getenv('INTERVAL_CAPTURE'))
 TMP_DIR = str(os.getenv('TMP_DIR'))
 POST_URL = str(os.getenv('POST_URL'))
 HOST_NAME = str(socket.gethostname())
@@ -64,7 +64,7 @@ def motion_detection(threshold=200):
             os.remove(path)
             before_img = gray_img.astype("float")
             cnt = 0
-            time.sleep(INTERVAL_2)
+            time.sleep(INTERVAL_CAPTURE)
             continue
 
         if cnt > 100:

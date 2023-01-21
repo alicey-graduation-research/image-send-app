@@ -20,16 +20,21 @@ spec:
               - key: sensortype
                 operator: In
                 values:
-                - usb_camera
+                - camera
       containers:
         - name: image_send_app
           image: alicey/image_send_app:latest
-          # securityContext:
-          #   privileged: true
+          securityContext:
+            privileged: true
           env:
-            - name: POST_ADDR
+            - name: DEVICE_ID
+              value: "0"
+            - name: POST_URL
               value: "http://127.0.0.1/temp"
-            # - name: PIN
-            #   value: "23"            
-            # - name: INTERVAL
-            #   value: "10"
+            - name: TMP_DIR
+              value: "./tmp"            
+            - name: INTERVAL
+              value: "2"
+            - name: INTERVAL_CAPTURE
+              value: "5"
+              

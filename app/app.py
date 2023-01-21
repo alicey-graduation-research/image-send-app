@@ -32,7 +32,7 @@ def motion_detection(threshold=200):
     before_img = None
 
     while True:
-        print(cnt)
+        #print(cnt)
         ret, frame = capture.read()
         if ret == False:
             break
